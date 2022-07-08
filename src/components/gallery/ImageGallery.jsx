@@ -1,11 +1,16 @@
-const ImageGallery = props => {
-  const { images } = props;
+import PropTypes from 'prop-types';
+
+import { Gallery } from './ImageGallery.styled';
+import ImageGalleryItem from '../gallery-item';
+
+const ImageGallery = async ({ query, isLoading }) => {
+  const list = await getImages(query);
   return (
-    <ul className="image-gallery">
-      {images.map(image => (
-        <img src={image.url} alt={image.title} key={image.id} />
-      ))}
-    </ul>
+    <Gallery>
+      {/* {list.map(item => (
+        <ImageGalleryItem key={item.id} {...item} />
+      ))} */}
+    </Gallery>
   );
 };
 export default ImageGallery;

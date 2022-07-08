@@ -1,16 +1,14 @@
+import PropTypes from 'prop-types';
+
+import { Overlay, Content } from './Modal.styled';
+
 const Modal = props => {
   return (
-    <div className="modal">
-      <div className="modal-content">
-        <div className="modal-header">
-          <h2>{props.title}</h2>
-          <button className="modal-close-button" onClick={props.onClose}>
-            &times;
-          </button>
-        </div>
-        <div className="modal-body">{props.children}</div>
-      </div>
-    </div>
+    <Overlay>
+      <Content class="modal">
+        <img src="" alt="" />
+      </Content>
+    </Overlay>
   );
 };
 

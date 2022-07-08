@@ -1,9 +1,7 @@
+import { Loadmore } from './Button.styled';
+
 const Button = props => {
-  return (
-    <but ton className={props.className}>
-      {props.children}
-    </but>
-  );
+  return <Loadmore />;
 };
 
 export default Button;
