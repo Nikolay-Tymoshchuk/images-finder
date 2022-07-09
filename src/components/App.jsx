@@ -22,6 +22,7 @@ export class App extends Component {
     query === this.state.query
       ? this.setState(prevState => ({ page: prevState.page + 1 }))
       : this.setState({ query, page: 1, hits: [] });
+    scroll.scrollToBottom({ duration: 1000 });
   };
 
   componentDidUpdate(_, prevState) {
