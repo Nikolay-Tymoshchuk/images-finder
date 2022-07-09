@@ -5,13 +5,15 @@ import { Overlay, Content } from './Modal.styled';
 
 const modalRoot = document.getElementById('modal-root');
 
-export class Modal extends Component {
+class Modal extends Component {
   handleKeyDown = e => {
     if (e.key === 'Escape') {
       this.props.onClose();
     }
   };
+
   componentDidMount() {
+    console.log('done:>> ');
     window.addEventListener('keydown', this.handleKeyDown);
   }
 

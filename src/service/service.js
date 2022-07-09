@@ -42,11 +42,11 @@ export const getImages = async (query = '', page = 1) => {
   const response = await axios.get(request);
   const totalHits = response.data.totalHits;
   const hits = response.data.hits;
-  const lastPage = Math.ceil(totalHits / options.PER_PAGE);
+  const totalPages = Math.ceil(totalHits / options.PER_PAGE);
   const outputData = {
     hits,
-    lastPage,
+    totalPages,
   };
-  console.log('lastPage :>> ', lastPage);
+  console.log('totalPages :>> ', totalPages);
   return outputData;
 };

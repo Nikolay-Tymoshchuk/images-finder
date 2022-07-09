@@ -1,5 +1,12 @@
-import { Circles } from 'react-loader-spinner';
+import { Metronome } from '@uiball/loaders';
+import { Trinity } from './Loader.styled';
 
-const Loader = () => <Circles color="#00BFFF" height={80} width={80} />;
+function Loader() {
+  return (
+    <Trinity aria-live="polite">
+      <Metronome size={80} speed={1.6} color="#3f51b5" />
+    </Trinity>
+  );
+}
 
 export default Loader;

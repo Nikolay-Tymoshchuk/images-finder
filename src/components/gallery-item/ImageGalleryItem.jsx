@@ -1,16 +1,22 @@
 import PropTypes from 'prop-types';
-import { Component } from 'react';
+import { PureComponent } from 'react';
 import Modal from '../modal';
-
 import { ListItem, Image } from './ImageGalleryItem.styled';
 
-class ImageGalleryItem extends Component {
+class ImageGalleryItem extends PureComponent {
   state = {
     showModal: false,
   };
 
-  handleModal = () => {
-    console.log('cloc :>> ');
+  static propTypes = {
+    webformatURL: PropTypes.string.isRequired,
+    largeImageURL: PropTypes.string.isRequired,
+    tags: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
+  };
+
+  handleModal = e => {
+    console.log('this.state :>> ', this.state);
     this.setState(({ showModal }) => ({ showModal: !showModal }));
   };
 
@@ -32,5 +38,3 @@ class ImageGalleryItem extends Component {
   }
 }
 export default ImageGalleryItem;
-
-// ({ webformatURL, largeImageURL, tags })

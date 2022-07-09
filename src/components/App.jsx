@@ -5,70 +5,63 @@ import Button from './button';
 import { getImages } from 'service/service';
 import { Component } from 'react';
 import { Container } from './App.styled';
+var Scroll = require('react-scroll');
+var scroll = Scroll.animateScroll;
 
 export class App extends Component {
   state = {
     page: 1,
     query: '',
     hits: [],
-    status: 'idle',
+    isLoading: false,
     // error: null,
-    lastPage: 1,
-    showModal: false,
+    totalPages: 1,
   };
 
   handleSubmit = query => {
-    this.setState({ query, page: 1 });
+    query === this.state.query
+      ? this.setState(prevState => ({ page: prevState.page + 1 }))
+      : this.setState({ query, page: 1, hits: [] });
   };
 
   componentDidUpdate(_, prevState) {
     const { query, page } = this.state;
     if (prevState.query !== query || prevState.page !== page) {
-      this.handleFetch();
+      this.handleFetch(query, page);
     }
   }
 
-  async handleFetch() {
+  async handleFetch(query, page) {
     try {
-      this.setState({ status: 'loading' });
-      const { query, page } = this.state;
-      const { hits, lastPage } = await getImages(query, page);
-      this.setState({ hits, lastPage, status: 'success' });
+      this.setState({ isLoading: true });
+      const { hits, totalPages } = await getImages(query, page);
+      this.setState(prevState => ({
+        hits: [...prevState.hits, ...hits],
+        totalPages,
+      }));
     } catch (error) {
       console.log('object :>> ', error.message);
+    } finally {
+      this.setState({ isLoading: false });
     }
   }
 
-  handleLoadMore = () =>
+  handleLoadMore = () => {
     this.setState(prevState => ({
       page: prevState.page + 1,
-      hits: prevState['hits'].concat(this.state.hits),
     }));
+    scroll.scrollToBottom({ duration: 1000 });
+  };
 
   render() {
-    const { page, lastPage, hits, status } = this.state;
+    const { query, page, totalPages, hits, isLoading } = this.state;
     return (
       <Container>
-        <Searchbar onSubmit={this.handleSubmit} />
-        {status === 'loading' && <Loader />}
-        {status === 'success' && (
-          <>
-            <ImageGallery data={hits} />
-            {page < lastPage && <Button onClick={this.handleLoadMore} />}
-          </>
-        )}
+        <Searchbar request={query} onSubmit={this.handleSubmit} />
+        <ImageGallery data={hits} />
+        {isLoading && <Loader />}
+        {page < totalPages && <Button onClick={this.handleLoadMore} />}
       </Container>
     );
   }
-}
-
-{
-  /* <Searchbar onSubmit={this.handleSubmit} />; */
-}
-
-{
-  /* <Button /> */
-}
-{
-  /* <Modal /> */
 }
