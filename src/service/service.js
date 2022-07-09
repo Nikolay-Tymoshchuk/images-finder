@@ -47,5 +47,6 @@ export const getImages = async (query = '', page = 1) => {
     hits,
     lastPage,
   };
+  console.log('lastPage :>> ', lastPage);
   return outputData;
 };

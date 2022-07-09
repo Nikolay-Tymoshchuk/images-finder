@@ -1,61 +1,62 @@
-import { Component } from 'react';
-
 import Searchbar from './searchbar';
 import Loader from './loader';
 import ImageGallery from './gallery';
-import { getImages } from 'service/service';
 import Button from './button';
-// import Modal from './modal';
+import { getImages } from 'service/service';
+import { Component } from 'react';
 import { Container } from './App.styled';
 
 export class App extends Component {
   state = {
-    queryData: [],
+    page: 1,
+    query: '',
+    hits: [],
     status: 'idle',
-    error: null,
-    currentPage: 1,
+    // error: null,
     lastPage: 1,
+    showModal: false,
   };
 
-  handleSubmit = async query => {
-    this.setState({ status: 'loading' });
-    const { lastPage, hits } = await this.handleData(query);
-    console.log('lastPage :>> ', lastPage);
-    console.log('hits :>> ', hits);
-    this.setState({
-      queryData: hits,
-      lastPage,
-      currentPage: this.state.currentPage + 1,
-      status: 'success',
-    });
+  handleSubmit = query => {
+    this.setState({ query, page: 1 });
   };
 
-  handleLoading() {
-    this.setState(prevState => prevState.currentPage + 1);
+  componentDidUpdate(_, prevState) {
+    const { query, page } = this.state;
+    if (prevState.query !== query || prevState.page !== page) {
+      this.handleFetch();
+    }
   }
 
-  handleData = async query => {
-    const { currentPage } = this.state;
-    const data = await getImages(query, currentPage);
-    return data;
-  };
+  async handleFetch() {
+    try {
+      this.setState({ status: 'loading' });
+      const { query, page } = this.state;
+      const { hits, lastPage } = await getImages(query, page);
+      this.setState({ hits, lastPage, status: 'success' });
+    } catch (error) {
+      console.log('object :>> ', error.message);
+    }
+  }
+
+  handleLoadMore = () =>
+    this.setState(prevState => ({
+      page: prevState.page + 1,
+      hits: prevState['hits'].concat(this.state.hits),
+    }));
 
   render() {
-    const { queryData, status, error, currentPage, lastPage } = this.state;
+    const { page, lastPage, hits, status } = this.state;
     return (
       <Container>
         <Searchbar onSubmit={this.handleSubmit} />
         {status === 'loading' && <Loader />}
         {status === 'success' && (
           <>
-            <ImageGallery data={queryData} />
-            {currentPage < lastPage && queryData.length > 0 && (
-              <Button onClick={this.handleLoading} />
-            )}
+            <ImageGallery data={hits} />
+            {page < lastPage && <Button onClick={this.handleLoadMore} />}
           </>
         )}
-
-        {status === 'error' && <p>{error}</p>}
       </Container>
     );
   }
