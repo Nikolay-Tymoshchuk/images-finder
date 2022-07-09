@@ -1,6 +1,5 @@
-import PropTypes from 'prop-types';
+import { Circles } from 'react-loader-spinner';
 
-const Loader = () => {
-  return <div className="loader"></div>;
-};
+const Loader = () => <Circles color="#00BFFF" height={80} width={80} />;
+
 export default Loader;

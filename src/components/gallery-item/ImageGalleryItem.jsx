@@ -2,14 +2,13 @@ import PropTypes from 'prop-types';
 
 import { ListItem, Image } from './ImageGalleryItem.styled';
 
-const ImageGalleryItem = ({ image, onClick }) => {
+const ImageGalleryItem = ({ webformatURL, largeImageURL, tags }) => {
   return (
-    <ListItem className="image-gallery-item">
+    <ListItem>
       <Image
-        className="image-gallery-image"
-        src={image.webformatURL}
-        alt={image.tags}
-        onClick={onClick}
+        src={webformatURL}
+        alt={tags}
+        // onClick={onClick}
       />
     </ListItem>
   );
