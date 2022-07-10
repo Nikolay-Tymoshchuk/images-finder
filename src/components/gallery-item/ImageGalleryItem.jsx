@@ -16,7 +16,6 @@ class ImageGalleryItem extends PureComponent {
   };
 
   handleModal = e => {
-    console.log('this.state :>> ', this.state);
     this.setState(({ showModal }) => ({ showModal: !showModal }));
   };
 
@@ -37,4 +36,5 @@ class ImageGalleryItem extends PureComponent {
     );
   }
 }
+
 export default ImageGalleryItem;

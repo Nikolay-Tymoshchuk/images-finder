@@ -11,6 +11,7 @@ class Searchbar extends Component {
   static propTypes = {
     onSubmit: PropTypes.func.isRequired,
   };
+
   handleChange = e => {
     this.setState({ query: e.target.value });
   };

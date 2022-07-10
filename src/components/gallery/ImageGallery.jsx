@@ -11,7 +11,6 @@ const ImageGallery = ({ data }) => {
     </Gallery>
   );
 };
-export default ImageGallery;
 
 ImageGallery.propTypes = {
   data: PropTypes.arrayOf(
@@ -20,3 +19,5 @@ ImageGallery.propTypes = {
     })
   ).isRequired,
 };
+
+export default ImageGallery;

@@ -1,11 +1,11 @@
 import { Metronome } from '@uiball/loaders';
-import { Trinity } from './Loader.styled';
+import { Box } from './Loader.styled';
 
 function Loader() {
   return (
-    <Trinity aria-live="polite">
+    <Box aria-live="polite">
       <Metronome size={80} speed={1.6} color="#3f51b5" />
-    </Trinity>
+    </Box>
   );
 }
 

@@ -6,6 +6,10 @@ import { Overlay, Content } from './Modal.styled';
 const modalRoot = document.getElementById('modal-root');
 
 class Modal extends Component {
+  static propTypes = {
+    children: PropTypes.node.isRequired,
+    onClose: PropTypes.func.isRequired,
+  };
   handleKeyDown = e => {
     if (e.key === 'Escape') {
       this.props.onClose();
@@ -13,7 +17,6 @@ class Modal extends Component {
   };
 
   componentDidMount() {
-    console.log('done:>> ');
     window.addEventListener('keydown', this.handleKeyDown);
   }
 
@@ -21,9 +24,14 @@ class Modal extends Component {
     window.removeEventListener('keydown', this.handleKeyDown);
   }
 
+  handleBackdropClick = e => {
+    if (e.target !== e.currentTarget) return;
+    this.props.onClose();
+  };
+
   render() {
     return createPortal(
-      <Overlay>
+      <Overlay onClick={this.handleBackdropClick}>
         <Content>{this.props.children}</Content>
       </Overlay>,
       modalRoot

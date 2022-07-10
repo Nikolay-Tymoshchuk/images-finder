@@ -5,8 +5,8 @@ import Button from './button';
 import { getImages } from 'service/service';
 import { Component } from 'react';
 import { Container } from './App.styled';
-var Scroll = require('react-scroll');
-var scroll = Scroll.animateScroll;
+const Scroll = require('react-scroll');
+const scroll = Scroll.animateScroll;
 
 export class App extends Component {
   state = {
@@ -58,7 +58,7 @@ export class App extends Component {
     const { query, page, totalPages, hits, isLoading } = this.state;
     return (
       <Container>
-        <Searchbar request={query} onSubmit={this.handleSubmit} />
+        <Searchbar onSubmit={this.handleSubmit} />
         <ImageGallery data={hits} />
         {isLoading && <Loader />}
         {page < totalPages && <Button onClick={this.handleLoadMore} />}

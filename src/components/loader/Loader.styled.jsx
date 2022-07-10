@@ -1,7 +1,8 @@
 import styled from '@emotion/styled';
 
-export const Trinity = styled.div`
+export const Box = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  color: #83cbda;
 `;
