@@ -4,5 +4,4 @@ export const Box = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #83cbda;
 `;

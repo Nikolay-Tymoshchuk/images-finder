@@ -1,13 +1,5 @@
 import axios from 'axios';
 
-// const data = {
-//   KEY: '27097192-0671b14f562b4984cf83e0bbe',
-//   URL: 'https://pixabay.com/api/',
-//   perPage: 'per_page=12',
-//   imageType: 'image_type=photo',
-//   orientation: '&orientation=horizontal',
-// };
-
 export const getImages = async (query = '', page = 1) => {
   const options = {
     KEY: '27097192-0671b14f562b4984cf83e0bbe',
@@ -37,14 +29,22 @@ export const getImages = async (query = '', page = 1) => {
   };
 
   const request = getOptions();
-  const response = await axios.get(request);
-  const totalHits = response.data.totalHits;
-  const hits = response.data.hits;
-  const totalPages = Math.ceil(totalHits / options.PER_PAGE);
-  const outputData = {
-    hits,
-    totalPages,
-  };
 
-  return outputData;
+  try {
+    const response = await axios.get(request, {
+      validateStatus: function (status) {
+        return status >= 200 && status < 300;
+      },
+    });
+    const totalHits = response.data.totalHits;
+    const hits = response.data.hits;
+    const totalPages = Math.ceil(totalHits / options.PER_PAGE);
+    const outputData = {
+      hits,
+      totalPages,
+    };
+    return outputData;
+  } catch (error) {
+    throw new Error('Oops, something went wrong. Try again later.');
+  }
 };

@@ -1,11 +1,14 @@
+import Scroll from 'react-scroll';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Searchbar from './searchbar';
-import { Loader } from './loader';
+import Loader from './loader';
 import ImageGallery from './gallery';
 import Button from './button';
+import ToTop from './buttonUp';
 import { getImages } from 'service/service';
 import { Component } from 'react';
 import { Container } from './App.styled';
-const Scroll = require('react-scroll');
 
 const scroll = Scroll.animateScroll;
 
@@ -15,7 +18,7 @@ export class App extends Component {
     query: '',
     hits: [],
     isLoading: false,
-    // error: null,
+    error: null,
     totalPages: 1,
   };
 
@@ -33,16 +36,21 @@ export class App extends Component {
     }
   }
 
+  handleError({ message }) {
+    this.setState({ error: message });
+    toast.error(message);
+  }
+
   async handleFetch(query, page) {
     try {
-      this.setState({ isLoading: true });
+      this.setState({ isLoading: true, error: null });
       const { hits, totalPages } = await getImages(query, page);
       this.setState(prevState => ({
         hits: [...prevState.hits, ...hits],
         totalPages,
       }));
     } catch (error) {
-      console.log('object :>> ', error.message);
+      this.handleError(error);
     } finally {
       this.setState({ isLoading: false });
     }
@@ -56,13 +64,24 @@ export class App extends Component {
   };
 
   render() {
-    const { page, totalPages, hits, isLoading } = this.state;
+    const { page, totalPages, hits, isLoading, error } = this.state;
     return (
       <Container>
         <Searchbar onSubmit={this.handleSubmit} />
         <ImageGallery data={hits} />
         {isLoading && <Loader />}
         {page < totalPages && <Button onClick={this.handleLoadMore} />}
+        {page > 2 && <ToTop />}
+        {error && (
+          <ToastContainer
+            position="top-left"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            rtl={false}
+            theme={'dark'}
+          />
+        )}
       </Container>
     );
   }

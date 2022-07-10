@@ -1,7 +1,7 @@
 import { Metronome } from '@uiball/loaders';
 import { Box } from './Loader.styled';
 
-export function Loader() {
+function Loader() {
   return (
     <Box aria-live="polite">
       <Metronome size={80} speed={1.6} color="#3f51b5" />
@@ -9,4 +9,4 @@ export function Loader() {
   );
 }
 
-// export default Loader;
+export default Loader;
