@@ -18,7 +18,6 @@ export class App extends Component {
     query: '',
     hits: [],
     isLoading: false,
-    error: null,
     totalPages: 1,
   };
 
@@ -36,21 +35,19 @@ export class App extends Component {
     }
   }
 
-  handleError({ message }) {
-    this.setState({ error: message });
-    toast.error(message);
-  }
-
   async handleFetch(query, page) {
     try {
       this.setState({ isLoading: true, error: null });
       const { hits, totalPages } = await getImages(query, page);
+      if (totalPages === 0) {
+        toast.error('No results found');
+      }
       this.setState(prevState => ({
         hits: [...prevState.hits, ...hits],
         totalPages,
       }));
-    } catch (error) {
-      this.handleError(error);
+    } catch ({ message }) {
+      toast.error(message);
     } finally {
       this.setState({ isLoading: false });
     }
@@ -64,7 +61,7 @@ export class App extends Component {
   };
 
   render() {
-    const { page, totalPages, hits, isLoading, error } = this.state;
+    const { page, totalPages, hits, isLoading } = this.state;
     return (
       <Container>
         <Searchbar onSubmit={this.handleSubmit} />
@@ -72,16 +69,14 @@ export class App extends Component {
         {isLoading && <Loader />}
         {page < totalPages && <Button onClick={this.handleLoadMore} />}
         {page > 2 && <ToTop />}
-        {error && (
-          <ToastContainer
-            position="top-left"
-            autoClose={3000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            rtl={false}
-            theme={'dark'}
-          />
-        )}
+        <ToastContainer
+          position="top-left"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          rtl={false}
+          theme={'dark'}
+        />
       </Container>
     );
   }
