@@ -7,8 +7,6 @@ import axios from 'axios';
 //   imageType: 'image_type=photo',
 //   orientation: '&orientation=horizontal',
 // };
-const defaultUrl =
-  'https://pixabay.com/api/?key=27097192-0671b14f562b4984cf83e0bbe&q=yellow+flowers&image_type=photo';
 
 export const getImages = async (query = '', page = 1) => {
   const options = {
@@ -47,6 +45,6 @@ export const getImages = async (query = '', page = 1) => {
     hits,
     totalPages,
   };
-  console.log('totalPages :>> ', totalPages);
+
   return outputData;
 };

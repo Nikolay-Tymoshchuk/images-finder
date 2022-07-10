@@ -1,11 +1,12 @@
 import Searchbar from './searchbar';
-import Loader from './loader';
+import { Loader } from './loader';
 import ImageGallery from './gallery';
 import Button from './button';
 import { getImages } from 'service/service';
 import { Component } from 'react';
 import { Container } from './App.styled';
 const Scroll = require('react-scroll');
+
 const scroll = Scroll.animateScroll;
 
 export class App extends Component {
@@ -55,7 +56,7 @@ export class App extends Component {
   };
 
   render() {
-    const { query, page, totalPages, hits, isLoading } = this.state;
+    const { page, totalPages, hits, isLoading } = this.state;
     return (
       <Container>
         <Searchbar onSubmit={this.handleSubmit} />
