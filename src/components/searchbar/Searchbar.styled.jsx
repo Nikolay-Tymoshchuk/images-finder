@@ -1,32 +1,38 @@
 import styled from '@emotion/styled';
+import picture from '../../images/gridnew.svg';
 
 export const Header = styled.header`
+  overflow: hidden;
   top: 0;
   left: 0;
-  position: sticky;
-  z-index: 1100;
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 64px;
   padding-right: 24px;
   padding-left: 24px;
-  padding-top: 12px;
-  padding-bottom: 12px;
+  padding-top: 24px;
+  padding-bottom: 24px;
   color: #fff;
-  background-color: var(--color-accent);
+  background: var(--color-background-header);
+  background-size: contain;
+  background-position: bottom;
   box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2),
     0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
 `;
 
 export const Form = styled.form`
+  position: inherit;
+  z-index: 1;
   display: flex;
   align-items: center;
-  width: 100%;
+  /* width: 100%; */
   max-width: 600px;
   background-color: #fff;
   border-radius: 3px;
   overflow: hidden;
+  background-color: var(--color-input);
 `;
 
 export const Button = styled.button`
@@ -47,19 +53,8 @@ export const Button = styled.button`
   }
 `;
 
-export const Label = styled.span`
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  clip-path: inset(50%);
-  border: 0;
-`;
-
 export const Input = styled.input`
+  position: relative;
   display: inline-block;
   width: 100%;
   font: inherit;
@@ -68,13 +63,13 @@ export const Input = styled.input`
   outline: none;
   padding-left: 4px;
   padding-right: 4px;
+  background-color: transparent;
 
   &::placeholder {
     font: inherit;
     font-size: 18px;
   }
 `;
-
 export const Svg = () => {
   return (
     <svg
@@ -83,8 +78,20 @@ export const Svg = () => {
       width="22"
       height="22"
       viewBox="0 0 30 30"
+      fill="var(--color-accent)"
     >
       <path d="M31.008 27.231l-7.58-6.447c-0.784-0.705-1.622-1.029-2.299-0.998 1.789-2.096 2.87-4.815 2.87-7.787 0-6.627-5.373-12-12-12s-12 5.373-12 12 5.373 12 12 12c2.972 0 5.691-1.081 7.787-2.87-0.031 0.677 0.293 1.515 0.998 2.299l6.447 7.58c1.104 1.226 2.907 1.33 4.007 0.23s0.997-2.903-0.23-4.007zM12 20c-4.418 0-8-3.582-8-8s3.582-8 8-8 8 3.582 8 8-3.582 8-8 8z"></path>
     </svg>
   );
 };
+
+export const Grid = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: url(${picture});
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  background-size: 250px;
+`;

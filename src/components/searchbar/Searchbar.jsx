@@ -1,11 +1,14 @@
 import PropTypes from 'prop-types';
-import { Component } from 'react';
+import PatriotHover from '../patriot-hover';
 
-import { Header, Form, Button, Svg, Input } from './Searchbar.styled';
+import { Component } from 'react';
+import { Header, Form, Button, Svg, Input, Grid } from './Searchbar.styled';
 
 class Searchbar extends Component {
   state = {
     query: '',
+    clientX: 0,
+    clientY: 0,
   };
 
   static propTypes = {
@@ -16,6 +19,13 @@ class Searchbar extends Component {
     this.setState({ query: e.target.value });
   };
 
+  handleMouseMove = e => {
+    this.setState({
+      clientX: e.clientX,
+      clientY: e.clientY,
+    });
+  };
+
   handleSubmit = e => {
     e.preventDefault();
     this.props.onSubmit(this.state.query.trim());
@@ -23,9 +33,11 @@ class Searchbar extends Component {
   };
 
   render() {
-    const { query } = this.state;
+    const { query, clientX, clientY } = this.state;
     return (
-      <Header>
+      <Header onMouseMove={this.handleMouseMove}>
+        <PatriotHover x={clientX} y={clientY}></PatriotHover>
+        <Grid></Grid>
         <Form onSubmit={this.handleSubmit}>
           <Button type="submit">{Svg()}</Button>
 
@@ -43,4 +55,5 @@ class Searchbar extends Component {
     );
   }
 }
+
 export default Searchbar;
