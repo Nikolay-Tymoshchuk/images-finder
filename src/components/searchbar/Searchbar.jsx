@@ -7,8 +7,8 @@ import { Header, Form, Button, Svg, Input, Grid } from './Searchbar.styled';
 class Searchbar extends Component {
   state = {
     query: '',
-    clientX: 0,
-    clientY: 0,
+    clientX: 200,
+    clientY: 56,
   };
 
   static propTypes = {
