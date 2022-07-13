@@ -39,11 +39,12 @@ export const getImages = async (query = '', page = 1) => {
     const totalHits = response.data.totalHits;
 
     const hits = response.data.hits.map(item => {
+      const { id, largeImageURL, webformatURL, tags } = item;
       return {
-        id: item.id,
-        largeImageURL: item.largeImageURL,
-        tags: item.tags,
-        webformatURL: item.webformatURL,
+        id,
+        largeImageURL,
+        tags,
+        webformatURL,
       };
     });
 
