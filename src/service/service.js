@@ -37,7 +37,16 @@ export const getImages = async (query = '', page = 1) => {
       },
     });
     const totalHits = response.data.totalHits;
-    const hits = response.data.hits;
+
+    const hits = response.data.hits.map(item => {
+      return {
+        id: item.id,
+        largeImageURL: item.largeImageURL,
+        tags: item.tags,
+        webformatURL: item.webformatURL,
+      };
+    });
+
     const totalPages = Math.ceil(totalHits / options.PER_PAGE);
     const outputData = {
       hits,

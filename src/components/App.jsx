@@ -6,6 +6,7 @@ import Loader from './loader';
 import ImageGallery from './gallery';
 import Button from './button';
 import ToTop from './buttonUp';
+import Modal from './modal';
 import { getImages } from 'service/service';
 import { Component } from 'react';
 import { Container } from './App.styled';
@@ -20,7 +21,8 @@ export class App extends Component {
     isLoading: false,
     isDataReady: false,
     totalPages: 1,
-    showModal: false
+    showModal: false,
+    dataForModal: null,
   };
 
   componentDidUpdate(_, prevState) {
@@ -31,7 +33,7 @@ export class App extends Component {
   }
 
   handleSubmit = request => {
-    const {query, isDataReady} = this.state
+    const { query } = this.state;
     request === query
       ? this.setState(prevState => ({ page: prevState.page + 1 }))
       : this.setState({ query: request, page: 1, hits: [] });
@@ -45,18 +47,25 @@ export class App extends Component {
     scroll.scrollToBottom({ duration: 1000 });
   };
 
-  handleModal = (data) => {
-    
-  }
+  handleModalOpen = e => {
+    this.setState({
+      showModal: true,
+      dataForModal: { image: e.target.dataset.modal, alt: e.target.alt },
+    });
+  };
+
+  handleModalClose = () => {
+    this.setState({ showModal: false, dataForModal: null });
+  };
 
   async handleFetch(query, page) {
     try {
       this.setState({ isLoading: true });
       const { hits, totalPages } = await getImages(query, page);
       if (totalPages === 0) {
-        this.setState({isDataReady: false})
+        this.setState({ isDataReady: false });
         toast.error('No results found');
-        return
+        return;
       }
       this.setState(prevState => ({
         hits: [...prevState.hits, ...hits],
@@ -70,16 +79,32 @@ export class App extends Component {
     }
   }
 
-
   render() {
-    const { page, totalPages, hits, isLoading, isDataReady, showModal } = this.state;
+    const {
+      page,
+      totalPages,
+      hits,
+      isLoading,
+      isDataReady,
+      showModal,
+      dataForModal,
+    } = this.state;
     return (
       <Container>
         <Searchbar onSubmit={this.handleSubmit} />
-        {isDataReady && <ImageGallery data={hits} onModalShow={showModal}/>}
+        {isDataReady && (
+          <ImageGallery data={hits} onModalShow={this.handleModalOpen} />
+        )}
         {isLoading && <Loader />}
-        {(page < totalPages && isDataReady) && <Button onClick={this.handleLoadMore} />}
+        {page < totalPages && isDataReady && (
+          <Button onClick={this.handleLoadMore} />
+        )}
         {page > 2 && <ToTop />}
+        {showModal && (
+          <Modal onClose={this.handleModalClose}>
+            <img src={dataForModal.image} alt={dataForModal.alt} />
+          </Modal>
+        )}
         <ToastContainer
           position="top-left"
           autoClose={3000}
