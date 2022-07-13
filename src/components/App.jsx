@@ -37,7 +37,6 @@ export class App extends Component {
     request === query
       ? this.setState(prevState => ({ page: prevState.page + 1 }))
       : this.setState({ query: request, page: 1, hits: [] });
-    scroll.scrollToBottom({ duration: 1000 });
   };
 
   handleLoadMore = () => {
@@ -60,8 +59,8 @@ export class App extends Component {
 
   async handleFetch(query, page) {
     try {
-      this.setState({ isLoading: true });
       const { hits, totalPages } = await getImages(query, page);
+      this.setState({ isLoading: true });
       if (totalPages === 0) {
         this.setState({ isDataReady: false });
         toast.error('No results found');
