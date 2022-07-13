@@ -18,14 +18,9 @@ export class App extends Component {
     query: '',
     hits: [],
     isLoading: false,
+    isDataReady: false,
     totalPages: 1,
-  };
-
-  handleSubmit = query => {
-    query === this.state.query
-      ? this.setState(prevState => ({ page: prevState.page + 1 }))
-      : this.setState({ query, page: 1, hits: [] });
-    scroll.scrollToBottom({ duration: 1000 });
+    showModal: false
   };
 
   componentDidUpdate(_, prevState) {
@@ -35,23 +30,13 @@ export class App extends Component {
     }
   }
 
-  async handleFetch(query, page) {
-    try {
-      this.setState({ isLoading: true, error: null });
-      const { hits, totalPages } = await getImages(query, page);
-      if (totalPages === 0) {
-        toast.error('No results found');
-      }
-      this.setState(prevState => ({
-        hits: [...prevState.hits, ...hits],
-        totalPages,
-      }));
-    } catch ({ message }) {
-      toast.error(message);
-    } finally {
-      this.setState({ isLoading: false });
-    }
-  }
+  handleSubmit = request => {
+    const {query, isDataReady} = this.state
+    request === query
+      ? this.setState(prevState => ({ page: prevState.page + 1 }))
+      : this.setState({ query: request, page: 1, hits: [] });
+    scroll.scrollToBottom({ duration: 1000 });
+  };
 
   handleLoadMore = () => {
     this.setState(prevState => ({
@@ -60,14 +45,40 @@ export class App extends Component {
     scroll.scrollToBottom({ duration: 1000 });
   };
 
+  handleModal = (data) => {
+    
+  }
+
+  async handleFetch(query, page) {
+    try {
+      this.setState({ isLoading: true });
+      const { hits, totalPages } = await getImages(query, page);
+      if (totalPages === 0) {
+        this.setState({isDataReady: false})
+        toast.error('No results found');
+        return
+      }
+      this.setState(prevState => ({
+        hits: [...prevState.hits, ...hits],
+        totalPages,
+        isDataReady: true,
+      }));
+    } catch ({ message }) {
+      toast.error(message);
+    } finally {
+      this.setState({ isLoading: false });
+    }
+  }
+
+
   render() {
-    const { page, totalPages, hits, isLoading } = this.state;
+    const { page, totalPages, hits, isLoading, isDataReady, showModal } = this.state;
     return (
       <Container>
         <Searchbar onSubmit={this.handleSubmit} />
-        <ImageGallery data={hits} />
+        {isDataReady && <ImageGallery data={hits} onModalShow={showModal}/>}
         {isLoading && <Loader />}
-        {page < totalPages && <Button onClick={this.handleLoadMore} />}
+        {(page < totalPages && isDataReady) && <Button onClick={this.handleLoadMore} />}
         {page > 2 && <ToTop />}
         <ToastContainer
           position="top-left"

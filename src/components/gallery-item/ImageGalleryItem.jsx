@@ -3,7 +3,7 @@ import { PureComponent } from 'react';
 import Modal from '../modal';
 import { ListItem, Image } from './ImageGalleryItem.styled';
 
-class ImageGalleryItem extends PureComponent {
+const ImageGalleryItem =({}) {
   state = {
     showModal: false,
   };
