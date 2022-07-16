@@ -1,5 +1,4 @@
 import Scroll from 'react-scroll';
-import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Searchbar from './searchbar';
 import Loader from './loader';
@@ -7,112 +6,91 @@ import ImageGallery from './gallery';
 import Button from './button';
 import ToTop from './buttonUp';
 import Modal from './modal';
+import { ToastContainer, toast } from 'react-toastify';
 import { getImages } from 'service/service';
-import { Component } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Container } from './App.styled';
 
 const scroll = Scroll.animateScroll;
 
-export class App extends Component {
-  state = {
-    page: 1,
-    query: '',
-    hits: [],
-    isLoading: false,
-    isDataReady: false,
-    totalPages: 1,
-    showModal: false,
-    dataForModal: null,
-  };
+export function App() {
+  const [page, setPage] = useState(1);
+  const [query, setQuery] = useState('');
+  const [hits, setHits] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isDataReady, setIsDataReady] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
+  const [dataForModal, setDataForModal] = useState(null);
+  const isFirstLoad = useRef(true);
 
-  componentDidUpdate(_, prevState) {
-    const { query, page } = this.state;
-    if (prevState.query !== query || prevState.page !== page) {
-      this.handleFetch(query, page);
+  useEffect(() => {
+    if (isFirstLoad.current || query === '') {
+      isFirstLoad.current = false;
+      return;
     }
+    setIsLoading(true);
+    handleFetch(query, page);
+  }, [page, query]);
+
+  function handleSubmit(request) {
+    if (request === query) {
+      setPage(prevState => prevState + 1);
+      return;
+    }
+    setQuery(request);
+    setPage(1);
+    setHits([]);
   }
 
-  handleSubmit = request => {
-    const { query } = this.state;
-    request === query
-      ? this.setState(prevState => ({ page: prevState.page + 1 }))
-      : this.setState({ query: request, page: 1, hits: [] });
-  };
-
-  handleLoadMore = () => {
-    this.setState(prevState => ({
-      page: prevState.page + 1,
-    }));
+  function handleLoadMore() {
+    setPage(prevState => prevState + 1);
     scroll.scrollToBottom({ duration: 1000 });
-  };
+  }
 
-  handleModalOpen = e => {
-    this.setState({
-      showModal: true,
-      dataForModal: { image: e.target.dataset.modal, alt: e.target.alt },
-    });
-  };
+  function handleModalOpen(e) {
+    setDataForModal({ image: e.target.dataset.modal, alt: e.target.alt });
+  }
 
-  handleModalClose = () => {
-    this.setState({ showModal: false, dataForModal: null });
-  };
-
-  async handleFetch(query, page) {
+  async function handleFetch(request, page) {
     try {
-      const { hits, totalPages } = await getImages(query, page);
-      this.setState({ isLoading: true });
+      const { hits, totalPages } = await getImages(request, page);
       if (totalPages === 0) {
-        this.setState({ isDataReady: false });
+        setIsDataReady(false);
         toast.error('No results found');
         return;
       }
-      this.setState(prevState => ({
-        hits: [...prevState.hits, ...hits],
-        totalPages,
-        isDataReady: true,
-      }));
+      setHits(prevState => [...prevState, ...hits]);
+      setTotalPages(totalPages);
+      setIsDataReady(true);
     } catch ({ message }) {
       toast.error(message);
     } finally {
-      this.setState({ isLoading: false });
+      setIsLoading(false);
     }
   }
 
-  render() {
-    const {
-      page,
-      totalPages,
-      hits,
-      isLoading,
-      isDataReady,
-      showModal,
-      dataForModal,
-    } = this.state;
-    return (
-      <Container>
-        <Searchbar onSubmit={this.handleSubmit} />
-        {isDataReady && (
-          <ImageGallery data={hits} onModalShow={this.handleModalOpen} />
-        )}
-        {isLoading && <Loader />}
-        {page < totalPages && isDataReady && (
-          <Button onClick={this.handleLoadMore} />
-        )}
-        {page > 2 && <ToTop />}
-        {showModal && (
-          <Modal onClose={this.handleModalClose}>
-            <img src={dataForModal.image} alt={dataForModal.alt} />
-          </Modal>
-        )}
-        <ToastContainer
-          position="top-left"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          rtl={false}
-          theme={'dark'}
-        />
-      </Container>
-    );
-  }
+  return (
+    <Container>
+      <Searchbar onSubmit={handleSubmit} />
+      {isDataReady && (
+        <ImageGallery data={hits} onModalShow={handleModalOpen} />
+      )}
+      {isLoading && <Loader />}
+      {page < totalPages && isDataReady && <Button onClick={handleLoadMore} />}
+      {page > 2 && <ToTop />}
+      {dataForModal && (
+        <Modal onClose={() => setDataForModal(null)}>
+          <img src={dataForModal.image} alt={dataForModal.alt} />
+        </Modal>
+      )}
+      <ToastContainer
+        position="top-left"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        rtl={false}
+        theme={'dark'}
+      />
+    </Container>
+  );
 }
