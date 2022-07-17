@@ -19,7 +19,7 @@ function Modal({ children, onClose }) {
     return () => {
       window.removeEventListener('keydown', handleEscape);
     };
-  }, [children]);
+  }, [children, onClose]);
 
   const handleBackdropClick = e => {
     if (e.target !== e.currentTarget) return;
