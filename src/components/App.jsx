@@ -25,6 +25,7 @@ export function App() {
 
   useEffect(() => {
     if (isFirstLoad.current || query === '') {
+      console.log('I can load more by enter key :-) Very useful :-D');
       isFirstLoad.current = false;
       return;
     }
