@@ -1,8 +1,8 @@
 {
-  "name": "goit-react-hw-04-images",
+  "name": "images-finder",
   "version": "2.0.0",
   "private": true,
-  "homepage": "https://goitacademy.github.io/goit-react-hw-04-images/",
+  "homepage": "https://nikolay-tymoshchuk.github.io/images-finder/",
   "dependencies": {
     "@emotion/keyframes": "^0.9.1",
     "@emotion/styled": "^11.9.3",
